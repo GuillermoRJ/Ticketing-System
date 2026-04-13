@@ -3,7 +3,15 @@ import Ticket_Devs from "../models/ticket_devs.js";
 
 const createTicket = async (req, res) => {
   try {
-    const ticket = new Ticket({ ...req.body, created_by: req.user._id });
+    const { title, description, type_id, priority } = req.body;
+    const ticket = new Ticket({
+      title,
+      description,
+      type_id,
+      priority,
+      created_by: req.user._id,
+    });
+
     await ticket.save();
     res.status(201).json(ticket);
   } catch (error) {

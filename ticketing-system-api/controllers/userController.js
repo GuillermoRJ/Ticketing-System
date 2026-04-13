@@ -3,9 +3,6 @@ import User from "../models/user.js";
 const createUser = async (req, res) => {
   try {
     const data = req.body;
-    if (Object.keys(data).length < 6)
-      return res.status(400).json({ message: "Se requieren mínimo 6 campos" });
-
     const existingUser = await User.findOne({
       $or: [{ email: data.email }, { username: data.username }],
     });

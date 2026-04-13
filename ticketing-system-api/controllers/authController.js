@@ -5,24 +5,24 @@ const login = async (req, res) => {
   try {
     const user = await User.findOne({ username });
     if (!user)
-      return res.status(404).json({ message: "Usuario no encontrado" });
+      return res.status(404).json({ message: "Usuario no encontrado." });
 
     if (user.failed_attempts >= 5) {
-      return res
-        .status(401)
-        .json({ message: "Cuenta bloqueada temporalmente" });
+      return res.status(401).json({
+        message: "Cuenta bloqueada temporalmente por seguridad.",
+      });
     }
 
     if (user.password !== password) {
       user.failed_attempts += 1;
       await user.save();
-      return res.status(401).json({ message: "Credenciales incorrectas" });
+      return res.status(401).json({ message: "Credenciales incorrectas." });
     }
 
     user.failed_attempts = 0;
     await user.save();
     res.status(200).json({
-      message: "Login exitoso",
+      message: "Login exitoso.",
       user: { username: user.username, rol: user.rol },
     });
   } catch (error) {
