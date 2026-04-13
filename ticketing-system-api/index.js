@@ -1,8 +1,6 @@
 import express from "express";
 import dbConnection from "./config/database.js";
-import dotenv from "dotenv";
-
-dotenv.config();
+  import routes from "./routes/index.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,7 +11,7 @@ const startServer = async () => {
   try {
     await dbConnection();
     console.log("Database connected.");
-
+    app.use("/api", routes);
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
