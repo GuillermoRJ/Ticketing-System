@@ -5,7 +5,7 @@ import User from "../models/user.js";
 
 const createTicket = async (req, res) => {
   try {
-    const { id, title, description, type_id, priority } = req.body;
+    const { id, title, description, type_id, priority, status } = req.body;
 
     if (id) {
       const existingId = await Ticket.findOne({ id });

@@ -12,7 +12,8 @@ const getTypes = async (req, res) => {
 
 const createType = async (req, res) => {
   try {
-    const newType = new Type(req.body);
+    const { id, type, description, area } = req.body;
+    const newType = new Type({ id, type, description, area });
     await newType.save();
     res.status(201).json(newType);
   } catch (error) {
@@ -42,7 +43,7 @@ const deleteType = async (req, res) => {
 
 const getCategories = async (req, res) => {
   try {
-    const categories = await Category.find();
+    const categories = await Type.find().select("id type -_id");
     res.status(200).json(categories);
   } catch (error) {
     res.status(500).json({ message: error.message });

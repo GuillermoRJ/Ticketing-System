@@ -5,7 +5,7 @@ const TicketSchema = new mongoose.Schema({
   title: String,
   description: String,
   type_id: { type: mongoose.Schema.Types.ObjectId, ref: "Type" },
-  status: { type: String, enum: ["open", "in_progress", "closed"] },
+  status: { type: String, enum: ["open", "in_progress", "closed"], default: "open" },
   priority: { type: String, enum: ["low", "medium", "high"] },
   created_by: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   created_at: { type: Date, default: Date.now },

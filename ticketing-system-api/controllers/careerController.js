@@ -2,8 +2,8 @@ import Career from "../models/career.js";
 
 const createCareer = async (req, res) => {
   try {
-    const { name } = req.body;
-    const newCareer = new Career({ name });
+    const { id, name } = req.body;
+    const newCareer = new Career({ id, name });
     await newCareer.save();
     res.status(201).json(newCareer);
   } catch (error) {
