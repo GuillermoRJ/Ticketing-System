@@ -12,7 +12,7 @@ import authMiddleware from "../middlewares/authMiddleware.js";
 
 const router = Router();
 
-router.post("/", createUser);
+router.post("/register", createUser);
 router.get("/", authMiddleware, getUsers);
 router.get("/filter", authMiddleware, filterUsers);
 router.get("/:id", authMiddleware, getUserById);

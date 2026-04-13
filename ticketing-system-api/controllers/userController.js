@@ -1,8 +1,18 @@
 import User from "../models/user.js";
+import Career from "../models/career.js";
 
 const createUser = async (req, res) => {
   try {
     const data = req.body;
+
+    if (data.id) {
+      const existingId = await User.findOne({ id: data.id });
+      if (existingId)
+        return res.status(400).json({
+          message: "El ID proporcionado ya existe, por favor utiliza otro.",
+        });
+    }
+
     const existingUser = await User.findOne({
       $or: [{ email: data.email }, { username: data.username }],
     });
@@ -10,6 +20,15 @@ const createUser = async (req, res) => {
       return res
         .status(400)
         .json({ message: "El email o username ya están en uso" });
+
+    if (data.career_id) {
+      const careerDoc = await Career.findOne({ id: data.career_id });
+      if (!careerDoc)
+        return res
+          .status(404)
+          .json({ message: "La carrera proporcionada no existe." });
+      data.career_id = careerDoc._id;
+    }
 
     const newUser = new User(data);
     await newUser.save();
@@ -25,7 +44,8 @@ const getUsers = async (req, res) => {
     const users = await User.find()
       .sort({ [sort]: 1 })
       .limit(limit * 1)
-      .skip((page - 1) * limit);
+      .skip((page - 1) * limit)
+      .populate("career_id", "name");
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -34,8 +54,12 @@ const getUsers = async (req, res) => {
 
 const getUserById = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ message: "No encontrado" });
+    const user = await User.findOne({ id: req.params.id }).populate(
+      "career_id",
+      "name",
+    );
+    if (!user)
+      return res.status(404).json({ message: "Usuario no encontrado" });
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -47,11 +71,16 @@ const filterUsers = async (req, res) => {
   const filter = {};
   if (name) filter.name = new RegExp(name, "i");
   if (email) filter.email = email;
-  if (career) filter.career_id = career;
   if (rol) filter.rol = rol;
 
+  if (career) {
+    const careerDoc = await Career.findOne({ id: career });
+    if (careerDoc) filter.career_id = careerDoc._id;
+    else filter.career_id = null;
+  }
+
   try {
-    const users = await User.find(filter);
+    const users = await User.find(filter).populate("career_id", "name");
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -60,11 +89,13 @@ const filterUsers = async (req, res) => {
 
 const updateStatus = async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
+    const user = await User.findOneAndUpdate(
+      { id: req.params.id },
       { active: req.body.active },
       { new: true },
     );
+    if (!user)
+      return res.status(404).json({ message: "Usuario no encontrado" });
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -74,16 +105,20 @@ const updateStatus = async (req, res) => {
 const editUser = async (req, res) => {
   try {
     const updates = req.body;
-
-    if (updates.rol && req.user.rol === "user") {
-      return res.status(403).json({
-        message: "No tienes permiso para cambiar el rol de un usuario",
-      });
+    const targetId = Number(req.params.id);
+    if (updates.career_id) {
+      const careerDoc = await Career.findOne({ id: updates.career_id });
+      if (!careerDoc)
+        return res
+          .status(404)
+          .json({ message: "La carrera proporcionada no existe." });
+      updates.career_id = careerDoc._id;
     }
-
-    const user = await User.findByIdAndUpdate(req.params.id, updates, {
+    const user = await User.findOneAndUpdate({ id: targetId }, updates, {
       new: true,
     });
+    if (!user)
+      return res.status(404).json({ message: "Usuario no encontrado" });
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -92,7 +127,13 @@ const editUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   try {
-    await User.findByIdAndUpdate(req.params.id, { active: false });
+    const user = await User.findOneAndUpdate(
+      { id: req.params.id },
+      { active: false },
+      { new: true },
+    );
+    if (!user)
+      return res.status(404).json({ message: "Usuario no encontrado" });
     res.status(200).json({ message: "Usuario eliminado" });
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -22,9 +22,8 @@ const createType = async (req, res) => {
 
 const updateType = async (req, res) => {
   try {
-    const updated = await Type.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const updated = await Type.findOneAndUpdate({ id: req.params.id }, req.body, { new: true });
+    if (!updated) return res.status(404).json({ message: "Tipo no encontrado" });
     res.status(200).json(updated);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -33,7 +32,8 @@ const updateType = async (req, res) => {
 
 const deleteType = async (req, res) => {
   try {
-    await Type.findByIdAndDelete(req.params.id);
+    const deleted = await Type.findOneAndDelete({ id: req.params.id });
+    if (!deleted) return res.status(404).json({ message: "Tipo no encontrado" });
     res.status(200).json({ message: "Tipo eliminado" });
   } catch (error) {
     res.status(500).json({ message: error.message });

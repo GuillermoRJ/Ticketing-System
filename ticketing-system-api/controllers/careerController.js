@@ -36,9 +36,11 @@ const filterCareers = async (req, res) => {
 
 const updateCareer = async (req, res) => {
   try {
-    const updated = await Career.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const updated = await Career.findOneAndUpdate(
+      { id: req.params.id },
+      req.body,
+      { new: true },
+    );
     if (!updated)
       return res.status(404).json({ message: "Carrera no encontrada" });
     res.status(200).json(updated);
@@ -49,8 +51,8 @@ const updateCareer = async (req, res) => {
 
 const deleteCareer = async (req, res) => {
   try {
-    const deleted = await Career.findByIdAndUpdate(
-      req.params.id,
+    const deleted = await Career.findOneAndUpdate(
+      { id: req.params.id },
       { active: false },
       { new: true },
     );
