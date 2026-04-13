@@ -91,7 +91,7 @@ const deleteTicket = async (req, res) => {
   }
 };
 
-export default {
+export {
   createTicket,
   getTickets,
   getTicketById,

@@ -101,7 +101,7 @@ const deleteUser = async (req, res) => {
   }
 };
 
-export default {
+export {
   createUser,
   getUsers,
   getUserById,
