@@ -8,13 +8,15 @@ import {
   deleteTicket,
   assignTicket,
   getTicketsByUser,
+  filterTickets,
 } from "../controllers/ticketController.js";
-import authMiddleware from "../middleware/authMiddleware.js";
+import authMiddleware from "../middlewares/authMiddleware.js";
 
 const router = Router();
 
-router.post("/", authMiddleware, createTicket);
 router.get("/", authMiddleware, getTickets);
+router.get("/filter", authMiddleware, filterTickets);
+router.post("/", authMiddleware, createTicket);
 router.post("/assign", authMiddleware, assignTicket);
 router.get("/user/:id", authMiddleware, getTicketsByUser);
 router.get("/:id", authMiddleware, getTicketById);

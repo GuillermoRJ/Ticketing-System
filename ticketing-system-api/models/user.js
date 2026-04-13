@@ -9,7 +9,11 @@ const UserSchema = new mongoose.Schema({
   career_id: { type: mongoose.Schema.Types.ObjectId, ref: "Career" },
   active: { type: Boolean, default: true },
   password: String,
-  rol: { type: String, enum: ["admin", "user", "dev"] },
+  rol: {
+    type: String,
+    enum: ["admin", "user", "dev"],
+    default: "user", 
+  },
   failed_attempts: { type: Number, default: 0 },
   created_at: { type: Date, default: Date.now },
 });

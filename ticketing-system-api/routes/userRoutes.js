@@ -8,11 +8,11 @@ import {
   editUser,
   deleteUser,
 } from "../controllers/userController.js";
-import authMiddleware from "../middleware/authMiddleware.js";
+import authMiddleware from "../middlewares/authMiddleware.js";
 
 const router = Router();
 
-router.post("/", authMiddleware, createUser);
+router.post("/", createUser);
 router.get("/", authMiddleware, getUsers);
 router.get("/filter", authMiddleware, filterUsers);
 router.get("/:id", authMiddleware, getUserById);

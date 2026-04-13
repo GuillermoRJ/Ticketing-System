@@ -82,6 +82,24 @@ const getTicketsByUser = async (req, res) => {
   }
 };
 
+const filterTickets = async (req, res) => {
+  const { status, priority, type, user } = req.query;
+  const filter = {};
+  if (status) filter.status = status;
+  if (priority) filter.priority = priority;
+  if (type) filter.type_id = type;
+  if (user) filter.created_by = user;
+
+  try {
+    const tickets = await Ticket.find(filter)
+      .populate("type_id")
+      .populate("created_by", "name email");
+    res.status(200).json(tickets);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const deleteTicket = async (req, res) => {
   try {
     await Ticket.findByIdAndDelete(req.params.id);
@@ -99,5 +117,6 @@ export {
   updateTicket,
   assignTicket,
   changeStatus,
+  filterTickets,
   deleteTicket,
 };

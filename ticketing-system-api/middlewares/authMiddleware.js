@@ -20,13 +20,9 @@ const authMiddleware = async (req, res, next) => {
     if (!user.active) {
       return res.status(401).json({ message: "El usuario está inactivo" });
     }
-    if (user.failed_attempts >= 5) {
-      return res
-        .status(401)
-        .json({ message: "Usuario bloqueado por múltiples intentos fallidos" });
-    }
+   
 
-    req.user = user; // Guardamos el usuario en la request para usarlo en el controlador
+    req.user = user;
     next();
   } catch (error) {
     res

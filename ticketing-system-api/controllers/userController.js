@@ -76,13 +76,15 @@ const updateStatus = async (req, res) => {
 
 const editUser = async (req, res) => {
   try {
-    const fields = Object.keys(req.body);
-    if (fields.length > 5)
-      return res
-        .status(400)
-        .json({ message: "Máximo 5 campos permitidos para actualizar" });
+    const updates = req.body;
 
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+    if (updates.rol && req.user.rol === "user") {
+      return res.status(403).json({
+        message: "No tienes permiso para cambiar el rol de un usuario",
+      });
+    }
+
+    const user = await User.findByIdAndUpdate(req.params.id, updates, {
       new: true,
     });
     res.status(200).json(user);
@@ -93,7 +95,6 @@ const editUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   try {
-    // Eliminación lógica
     await User.findByIdAndUpdate(req.params.id, { active: false });
     res.status(200).json({ message: "Usuario eliminado" });
   } catch (error) {
