@@ -9,8 +9,7 @@ Una API RESTful construida con **Node.js**, **Express** y **MongoDB** para la ge
 - **Gestión de Tickets:** Creación, asignación, actualización de estados, filtrado y eliminación de tickets.
 - **Gestión de Usuarios:** Registro, actualización, desactivación (soft delete) y roles predefinidos (`admin`, `dev`, `user`).
 - **Seguridad y Autenticación:** - Middleware de autenticación mediante headers.
-  - Bloqueo temporal de cuentas tras 5 intentos fallidos de inicio de sesión.
-  - Control de acceso basado en roles (Admin/Dev).
+  - Control de acceso basado en roles (Admin/Dev/User).
 - **KPIs y Métricas:** Endpoints dedicados para obtener agregaciones de tickets por estado, por usuario y por tipo.
 - **Gestión de Catálogos:** CRUD para carreras (`careers`) y tipos/categorías de tickets (`types`).
 
