@@ -128,9 +128,7 @@ const editUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const user = await User.deleteOne(
-      { id: req.params.id },
-      { active: false },
-      { new: true },
+      { id: req.params.id }
     );
     if (!user)
       return res.status(404).json({ message: "Usuario no encontrado" });
