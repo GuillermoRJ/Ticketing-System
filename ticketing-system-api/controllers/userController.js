@@ -127,7 +127,7 @@ const editUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   try {
-    const user = await User.findOneAndUpdate(
+    const user = await User.deleteOne(
       { id: req.params.id },
       { active: false },
       { new: true },
